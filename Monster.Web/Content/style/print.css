@@ -1,0 +1,28 @@
+﻿/*去除页眉页脚*/
+@page {
+    size: auto;
+    margin: 0mm;
+}
+
+body {
+    color: #000;
+    font-size: 14px;
+    font-family: 'Microsoft Yahei';
+}
+
+#printDiv {
+    width: 710px;
+    height: 339px;
+    margin: 0 50px;
+}
+
+.layui-table {
+    color: #000;
+}
+
+    .layui-table td {
+        border-color: #000000;
+        font-size: 14px;
+        padding: 3px 15px;
+        line-height: 18px;
+    }

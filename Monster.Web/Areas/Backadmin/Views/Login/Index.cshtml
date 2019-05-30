@@ -1,0 +1,91 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>通用文章管理系统</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="~/Content/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="~/Content/style/login.css" media="all">
+</head>
+<body>
+    <div style="background: rgba(0, 0, 0, .6);min-height: 100%;">
+        <div class="layui-row layui-login-container">
+            <div class="layui-col-md6 layui-login-container-left">
+                <h2 style="line-height: 2;text-align: left;">通用文章管理系统</h2>
+                <img src="~/Content/style/res/build.png" style="width: 100%;" />
+            </div>
+            <div class="layui-col-md6 layui-login-container-right">
+                <div class="layadmin-user-login-box layadmin-user-login-header">
+                    <h2>欢迎登录</h2>
+                </div>
+                <form class="layadmin-user-login-box layadmin-user-login-body layui-form">
+                    <div class="layui-form-item">
+                        <label class="layadmin-user-login-icon layui-icon layui-icon-username" for="LAY-user-login-username"></label>
+                        <input type="text" name="account" id="LAY-user-login-username" lay-verify="required" placeholder="请输入帐号" class="layui-input">
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="LAY-user-login-password"></label>
+                        <input type="password" name="password" id="LAY-user-login-password" lay-verify="required" placeholder="请输入密码" class="layui-input">
+                    </div>
+                    <div class="layui-form-item" style="margin-bottom: 20px;">
+
+                    </div>
+                    <div class="layui-form-item">
+                        <button id="btn_login" class="layui-btn layui-btn-fluid layui-btn-normal" lay-submit lay-filter="LAY-user-login-submit">登录</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="layui-trans layadmin-user-login-footer">
+        <p>技术支持：<a href="http://www.lzdongrui.com" target="_blank">柳州东睿信息技术有限公司</a></p>
+    </div>
+
+    <script src="~/Content/layui/layui.js"></script>
+    <script>
+        layui.config({
+            base: '/Content/' //静态资源所在路径
+        }).use(["index","form", "admin"], function () {
+            var $ = layui.$,
+                admin = layui.admin,
+                form = layui.form;
+
+
+
+            //提交
+            form.on('submit(LAY-user-login-submit)', function (obj) {
+                $(obj.elem).addClass('layui-btn-disabled').attr('disabled','disabled').html("正在登录中…");
+                //请求登入接口
+                admin.req({
+                    type: 'POST',
+                    cache: false,
+                    url: '@Url.Action("Login","Login")', //实际使用请改成服务端真实接口
+                    data: obj.field,
+                    done: function (res) {
+                        $(obj.elem).addClass('layui-btn-disabled').attr('disabled','disabled').html("正在跳转…");
+                        location.href = '@Url.Action("Index","Admin")'; //后台主页
+                    },
+                    complete: function (request) {
+                        $(obj.elem).removeClass('layui-btn-disabled').removeAttr('disabled').html("登  录");
+                    }
+                });
+
+            });
+            document.onkeydown = function (e) {
+                    if (!e) e = window.event;
+                    if ((e.keyCode || e.which) === 13) {
+                        document.getElementById("btn_login").focus();
+                        document.getElementById("btn_login").click();
+                    }
+                }
+        });
+    </script>
+</body>
+</html>

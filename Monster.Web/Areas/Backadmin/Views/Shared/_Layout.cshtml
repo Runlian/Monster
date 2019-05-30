@@ -1,0 +1,92 @@
+﻿@{
+    var modules = OperatorProvider.Provider.GetCurrent().Modules;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="~/Content/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/Content/layui/css/modules/dtree/dtree.css" rel="stylesheet" />
+    <link href="~/Content/style/admin.css" rel="stylesheet" />
+    <link href="~/Content/style/nprogress.css" rel="stylesheet" />
+    <script src="~/Content/layui/layui.js"></script>
+    <script src="~/Content/plugins/print.js"></script>
+    <script>layui.config({ base: '/Content/' });</script>
+
+</head> 
+<body class="layui-layout-body">
+    <div id="LAY_app">
+        <div class="layui-layout-admin">
+            <div class="layui-header">
+                <!-- 头部区域 -->
+                <ul class="layui-nav layui-layout-left">
+                    <li class="layui-nav-item layadmin-flexible" lay-unselect>
+                        <a href="javascript:;" layadmin-event="flexible" title="侧边伸缩">
+                            <i class="layui-icon layui-icon-shrink-right" id="LAY_app_flexible"></i>
+                        </a>
+                    </li>
+                    <li class="layui-nav-item layadmin-flexible" lay-unselect>
+                        <a href="@Url.Action("Index")" title="仪表板">
+                            <i class="layui-icon layui-icon-website"></i>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right">
+                    <li class="layui-nav-item" lay-unselect>
+                        <a href="javascript:;">
+                            <cite>@(OperatorProvider.Provider.GetCurrent().UserName)</cite>
+                        </a>
+                        <dl class="layui-nav-child">
+                            <dd><a lay-href="@Url.Action("ChangePassword")">修改密码</a></dd>
+                            <hr>
+                            <dd layadmin-event="logout" style="text-align: center;"><a>退出</a></dd>
+                        </dl>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 侧边菜单 -->
+            <div class="layui-side layui-side-menu">
+                <div class="layui-side-scroll">
+                    <div class="layui-logo">
+                        <span>就业网</span>
+                    </div>
+
+                    <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
+                        @foreach (var item in modules.Where(n => n.ParentId.Equals("0")))
+                        {
+                            <li class="layui-nav-item">
+                                <a href="javascript:;" lay-tips="@item.Name" lay-direction="2">
+                                    <i class="layui-icon @item.Icon"></i>
+                                    <cite>@item.Name</cite>
+                                  
+                                </a>
+                                @foreach (var sItem in modules.Where(n => n.ParentId.Equals(item.Id)))
+                                {
+
+                                    <dl class="layui-nav-child">
+                                        <dd>
+                                            <a data-pjax href="@sItem.Url">@sItem.Name</a>
+                                        </dd>
+                                    </dl>
+                                }
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <!-- 主体内容 -->
+            <div class="layui-body" id="container">
+                @RenderBody()
+            </div>
+
+            <!-- 辅助元素，一般用于移动设备下遮罩 -->
+            <div class="layadmin-body-shade" layadmin-event="shade"></div>
+        </div>
+    </div>
+    @RenderSection("scripts", required: false)
+    
+</body>
+</html>

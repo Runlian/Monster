@@ -1,0 +1,132 @@
+﻿@model Monster.Data.User
+@{
+    ViewBag.Title = "添加用户";
+}
+
+<div id="container">
+    <div class="layui-card layadmin-header"><h3 class="layui-title">新建角色</h3></div>
+    <div class="layui-fluid">
+        <div class="layui-card" style="min-height: calc(100vh - 180px)">
+            <div class="layui-card-body">
+                <div class="layui-row">
+                    <div class="layui-col-md6 layui-col-md-offset3">
+                        <form class="layui-form" lay-filter="component-form" style="margin-top: 80px;" onkeydown="if(event.keyCode===13){return false}">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" required>姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="Name" lay-verify="required" placeholder="请输入姓名" autocomplete="off" class="layui-input" lay-verType="tips">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" required>登录帐号</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="Account" lay-verify="required|account" placeholder="请输入登录帐号" autocomplete="off" class="layui-input" lay-verType="tips">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" required>登录密码</label>
+                                <div class="layui-input-block">
+                                    <input type="password" id="Password" name="Password" lay-verify="required" placeholder="请输入登录密码" autocomplete="off" class="layui-input" lay-verType="tips">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" required>确认密码</label>
+                                <div class="layui-input-block">
+                                    <input type="password" id="RePassword" name="RePassword" lay-verify="required|repass" placeholder="请输入确认密码" autocomplete="off" class="layui-input" lay-verType="tips">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" required>是否启用</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" name="IsEnabled" value="true" title="是" checked>
+                                    <input type="radio" name="IsEnabled" value="false" title="否">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">用户角色</label>
+                                <div class="layui-input-block">
+                                    @foreach (var item in Model.Roles)
+                                    {
+                                        <input type="checkbox" name="Rid[]" title="@item.Text" value="@item.Id" lay-skin="primary">
+                                    }
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button lay-submit lay-filter="lay-form-submit" class="layui-btn">保存</button>
+                                    <button type="button" layadmin-event="back" class="layui-btn layui-btn-primary">返回</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        layui.use(['index','form', 'admin'], function () {
+            var $ = layui.$,
+                form = layui.form,
+                layer = layui.layer,
+                admin = layui.admin;
+
+            form.render();
+
+            //自定义验证规则
+            form.verify({
+                account: function (value) {
+                    if (value.length < 3) {
+                        return '登录名至少得3个字符';
+                    }
+                    if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)) {
+                        return '登录名不能有特殊字符';
+                    }
+                    if (/(^\_)|(\__)|(\_+$)/.test(value)) {
+                        return '登录名首尾不能出现下划线\'_\'';
+                    }
+                },
+                repass: function (value) {
+                    if(value !== $('#Password').val()){
+                        return '两次密码输入不一致';
+                    }
+                }
+            });
+
+            // 提交权限配置表单
+            form.on('submit(lay-form-submit)', function (data) {
+                var roleIds = [];
+                layui.each(data.field, function (index, item) {
+                    if (index.indexOf('Rid') !== -1 ) {
+                        roleIds.push(item);
+                    };
+                });
+                if (roleIds.length === 0) {
+                    layer.msg("请选择用户角色");
+                    return false;
+                }
+                data.field["RoleId"] = roleIds;
+                admin.req({
+                    type: "POST",
+                    url: '@Url.Action("Add")',
+                    data: data.field,
+                    async: false,
+                    done: function (res) {
+                        if (res.code === 200) {
+                            layer.msg('保存成功', { time: 1000 }, function () {
+                                admin.back();
+                            });
+                        } else {
+                            layer.msg(res.msg, { icon: 2 });
+                        }
+                    },
+                    error: function (res) {
+                        layer.alert('出错了！', { icon: 2 });
+                        return false;
+                    }
+                });
+                return false;
+            });
+
+        });
+    </script>
+</div>
