@@ -3,44 +3,42 @@
     ViewBag.Title = "角色管理";
 }
 
-
-<div id="container">
-    <div class="layui-card layadmin-header"><h3 class="layui-title">角色管理</h3></div>
-    <div class="layui-fluid">
-        <div class="layui-card">
-            <div class="layui-card-body">
-                <div class="layui-form" lay-filter="component-form-group">
-                    <div class="layui-form-item">
-                        搜索：
-                        <div class="layui-inline">
-                            <div class="layui-input-inline">
-                                <input type="text" name="keyword" placeholder="名称" class="layui-input" autocomplete="off">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search-form-submit">
-                                <i class="layui-icon layui-icon-search"></i>搜索
-                            </button>
-                        </div>
-                        <div class="layui-pull-right">
-                            <button id="btn_add" data-type="add" class="layui-btn layui-btn-normal">新建</button>
+<div class="layui-card layadmin-header"><h3 class="layui-title">角色管理</h3></div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div class="layui-form" lay-filter="component-form-group">
+                <div class="layui-form-item">
+                    搜索：
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="text" name="keyword" placeholder="名称" class="layui-input" autocomplete="off">
                         </div>
                     </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search-form-submit">
+                            <i class="layui-icon layui-icon-search"></i>搜索
+                        </button>
+                    </div>
+                    <div class="layui-pull-right">
+                        <button id="btn_add" data-type="add" class="layui-btn layui-btn-normal">新建</button>
+                    </div>
                 </div>
-                <table class="layui-hide" id="mainTable" lay-filter="mainTable"></table>
-
             </div>
+            <table class="layui-hide" id="mainTable" lay-filter="mainTable"></table>
 
         </div>
+
     </div>
+</div>
 
-    <script type="text/html" id="operationTmpl">
-        <div class="layui-actions">
-            <a lay-event="edit">编辑</a>
-            <a lay-event="del">删除</a>
-        </div>
-    </script>
-    <script>
+<script type="text/html" id="operationTmpl">
+    <div class="layui-actions">
+        <a lay-event="edit">编辑</a>
+        <a lay-event="del">删除</a>
+    </div>
+</script>
+<script>
     layui.use(['index', 'table', 'form', 'admin'],function() {
         var $ = layui.$,
             admin = layui.admin,
@@ -81,9 +79,9 @@
         form.on('submit(search-form-submit)',function(data) {
             tableIns.reload({
                 where: {
-                    keyword: data.field.keyword
-                },
-                page: { curr: 1 }
+                    keyword: data.field.keyword,
+                    page: { curr : 1 }
+                }
             });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
@@ -91,12 +89,7 @@
 
         // 添加
         $("#btn_add").on("click", function () {
-            $.pjax({
-                url: "/Role/Add",
-                container: "#main-container",
-                fragment: "#container"
-            });
-
+            pjax.loadUrl('@Url.Action("Add")');
         });
 
         //监听工具条
@@ -123,13 +116,8 @@
                     });
                 });
             } else if (obj.event === 'edit') {
-                $.pjax({
-                    url: "@Url.Action("Edit")?id=" + data.Id,
-                    container: "#main-container",
-                    fragment: "#container"
-                });
+                pjax.loadUrl('@Url.Action("Edit")?id=' + data.Id);
             }
         });
     });
-    </script>
-</div>
+</script>

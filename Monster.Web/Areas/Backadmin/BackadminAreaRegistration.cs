@@ -18,7 +18,7 @@ namespace Monster.Web.Areas.Backadmin
                 "Backadmin_default",
                 "Backadmin/{controller}/{action}/{id}",
                 new { controller = "Login", action = "Index", id = UrlParameter.Optional },
-                new[] { "" }
+                new[] { "Monster.Web.Areas.Backadmin.Controllers" }
             );
         }
     }

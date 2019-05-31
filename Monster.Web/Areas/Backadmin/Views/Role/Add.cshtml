@@ -1,81 +1,79 @@
 ﻿@model Monster.Data.Role
 @{
-    ViewBag.Title = "新建角色";
+    ViewBag.Title = "角色管理";
 }
+<div class="layui-card layadmin-header"><h3 class="layui-title">新建角色</h3></div>
+<div class="layui-fluid">
+    <div class="layui-card" style="min-height: calc(100vh - 180px)">
+        <div class="layui-card-body">
+            <div class="layui-tab layui-tab-brief" lay-filter="roleTab">
+                <ul class="layui-tab-title">
+                    <li class="layui-this" lay-id="basic">基本信息</li>
+                    <li lay-id="auth">权限配置</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <div class="layui-row">
+                            <div class="layui-col-md6">
+                                <form class="layui-form">
+                                    <div class="layui-form-item" block>
+                                        <label class="layui-form-label" required>角色名称</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="Name" required lay-verify="required" placeholder="请输入角色名称" autocomplete="off" class="layui-input" lay-verType="tips">
+                                        </div>
+                                    </div>
 
-<div id="container">
-    <div class="layui-card layadmin-header"><h3 class="layui-title">新建角色</h3></div>
-    <div class="layui-fluid">
-        <div class="layui-card" style="min-height: calc(100vh - 180px)">
-            <div class="layui-card-body">
-                <div class="layui-tab layui-tab-brief" lay-filter="roleTab">
-                    <ul class="layui-tab-title">
-                        <li class="layui-this" lay-id="basic">基本信息</li>
-                        <li lay-id="auth">权限配置</li>
-                    </ul>
-                    <div class="layui-tab-content">
-                        <div class="layui-tab-item layui-show">
-                            <div class="layui-row">
-                                <div class="layui-col-md6">
-                                    <form class="layui-form" onkeydown="if(event.keyCode===13){return false}">
-                                        <div class="layui-form-item" block>
-                                            <label class="layui-form-label" required>角色名称</label>
-                                            <div class="layui-input-block">
-                                                <input type="text" name="Name" required lay-verify="required" placeholder="请输入角色名称" autocomplete="off" class="layui-input" lay-verType="tips">
-                                            </div>
+                                    <div class="layui-form-item" block>
+                                        <label class="layui-form-label" required>是否启用</label>
+                                        <div class="layui-input-block">
+                                            <input type="radio" name="IsEnabled" value="true" title="是" checked>
+                                            <input type="radio" name="IsEnabled" value="false" title="否">
                                         </div>
-
-                                        <div class="layui-form-item" block>
-                                            <label class="layui-form-label" required>是否启用</label>
-                                            <div class="layui-input-block">
-                                                <input type="radio" name="IsEnabled" value="true" title="是" checked>
-                                                <input type="radio" name="IsEnabled" value="false" title="否">
-                                            </div>
-                                        </div>
-                                        <div class="layui-form-item">
-                                            <button class="layui-btn" lay-submit lay-filter="basicFormSubmit">保存</button>
-                                            <button type="button" layadmin-event="back" class="layui-btn layui-btn-primary">返回</button>
-                                        </div>
-                                    </form>
-                                </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <button class="layui-btn" lay-submit lay-filter="basicFormSubmit">保存</button>
+                                        <button type="button" layadmin-event="back" class="layui-btn layui-btn-primary">返回</button>
+                                    </div>
+                                </form>
                             </div>
-
                         </div>
-                        <div class="layui-tab-item">
-                            <form class="layui-form" style="margin-top: 20px;" onkeydown="if(event.keyCode===13){return false}">
-                                <input type="hidden" id="roleId" name="roleId" value="" />
-                                <div class="layui-form-item">
-                                    @foreach (var item in Model.Modules.Where(n => n.ParentId.Equals("0")))
-                                    {
 
-                                        <dl class="admin-role-item">
-                                            <dt class="admin-role-root">
-                                                <input type="checkbox" id="@item.Value" name="moduleId[]" value="@item.Value" title="@item.Text" data-pid="@item.ParentId" lay-skin="primary" lay-filter="roleFilter">
-                                            </dt>
-                                            <dd class="admin-role-children">
-                                                @foreach (var sItem in Model.Modules.Where(n => n.ParentId.Equals(item.Id)))
-                                                {
-                                                    <input type="checkbox" id="@sItem.Id" name="moduleId[]" value="@sItem.Value" title="@sItem.Text" data-pid="@sItem.ParentId" lay-skin="primary" lay-filter="roleFilter">
-                                                }
-                                            </dd>
-                                        </dl>
+                    </div>
+                    <div class="layui-tab-item">
+                        <form class="layui-form" style="margin-top: 20px;">
+                            <input type="hidden" id="roleId" name="roleId" value="" />
+                            <div class="layui-form-item">
+                                @foreach (var item in Model.Modules.Where(n => n.ParentId.Equals("0")))
+                                {
 
-                                    }
-                                </div>
-                                <div class="layui-form-item">
-                                    <button class="layui-btn" lay-submit lay-filter="authFormSubmit">保存</button>
-                                    <button type="button" layadmin-event="back" class="layui-btn layui-btn-primary">返回</button>
-                                </div>
-                            </form>
-                        </div>
+                                    <dl class="admin-role-item">
+                                        <dt class="admin-role-root">
+                                            <input type="checkbox" id="@item.Value" name="moduleId[]" value="@item.Value" title="@item.Text" data-pid="@item.ParentId" lay-skin="primary" lay-filter="roleFilter">
+                                        </dt>
+                                        <dd class="admin-role-children">
+                                            @foreach (var sItem in Model.Modules.Where(n => n.ParentId.Equals(item.Id)))
+                                            {
+                                                <input type="checkbox" id="@sItem.Id" name="moduleId[]" value="@sItem.Value" title="@sItem.Text" data-pid="@sItem.ParentId" lay-skin="primary" lay-filter="roleFilter">
+                                            }
+                                        </dd>
+                                    </dl>
+
+                                }
+                            </div>
+                            <div class="layui-form-item">
+                                <button class="layui-btn" lay-submit lay-filter="authFormSubmit">保存</button>
+                                <button type="button" layadmin-event="back" class="layui-btn layui-btn-primary">返回</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
-
         </div>
+
     </div>
-    <script>
-        layui.use(['index','form', 'element', 'admin'], function () {
+</div>
+<script>
+        layui.use(['form', 'element', 'admin'], function () {
             var $ = layui.$,
                 form = layui.form,
                 element = layui.element,
@@ -108,7 +106,7 @@
             form.on('submit(basicFormSubmit)', function (data) {
                 admin.req({
                     type: "POST",
-                    url: '/Role/Add',
+                    url: '@Url.Action("Add")',
                     data: data.field,
                     async: false,
                     done: function (res) {
@@ -163,6 +161,4 @@
             });
 
         });
-    </script>
-</div>
-
+</script>

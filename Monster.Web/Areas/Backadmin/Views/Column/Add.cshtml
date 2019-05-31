@@ -1,0 +1,157 @@
+﻿
+@using Monster.Common
+@using Monster.Data
+@model Monster.Data.Column
+@{
+    ViewBag.Title = "栏目管理";
+}
+
+<div class="layui-card layadmin-header"><h3 class="layui-title">添加栏目</h3></div>
+<div class="layui-fluid">
+    <div class="layui-card" style="min-height: calc(100vh - 180px)">
+        <div class="layui-card-body">
+            <div class="layui-row">
+                <div class="layui-col-md6 layui-col-md-offset3">
+                    <form class="layui-form" lay-filter="component-form" style="margin-top: 80px;">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">上级栏目</label>
+                            <div class="layui-input-block">
+                                <div class="layui-unselect layui-form-select" id="ParentId">
+                                    <div class="layui-select-title">
+                                        <input type="text" name="ParentId" placeholder="请选择上级栏目" readonly="" class="layui-input layui-unselect">
+                                        <i class="layui-edge"></i>
+                                    </div>
+                                </div>
+                                <div class="layui-card" id="test">
+                                    <div class="layui-card-body">
+                                        <div id="toolbarDiv"><ul id="ParentTree" class="dtree" data-id="0" style="width: 100%;"></ul></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" required>栏目类型</label>
+                            <div class="layui-input-block">
+                                <select name="Type" lay-verify="required" lay-search="">
+                                    <option value="">请选择栏目类型</option>
+                                    @foreach (var item in EnumUtil.GetList<ColumnType>())
+                                    {
+                                        <option value="@item.Value">@item.Description</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" required>栏目名称</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="Name" lay-verify="required" placeholder="请输入栏目名称" autocomplete="off" class="layui-input" lay-verType="tips">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" required>链接</label>
+                            <div class="layui-input-block">
+                                <input type="text" id="Link" name="Link" placeholder="请输入链接" autocomplete="off" class="layui-input" lay-verType="tips">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" required>排序码</label>
+                            <div class="layui-input-block">
+                                <input type="text" id="SortCode" name="SortCode" placeholder="请输入排序码" autocomplete="off" class="layui-input" lay-verType="tips">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" required>前台显示</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="ShowNav" value="true" title="是" checked>
+                                <input type="radio" name="ShowNav" value="false" title="否">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" required>访问认证</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="IsAuth" value="true" title="是">
+                                <input type="radio" name="IsAuth" value="false" title="否" checked>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" required>是否启用</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="IsEnabled" value="true" title="是" checked>
+                                <input type="radio" name="IsEnabled" value="false" title="否">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button lay-submit lay-filter="lay-form-submit" class="layui-btn">保存</button>
+                                <button type="button" layadmin-event="back" class="layui-btn layui-btn-primary">返回</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+        layui.use(['index','form','dtree', 'admin'], function () {
+            var $ = layui.$,
+                form = layui.form,
+                dtree = layui.dtree,
+                layer = layui.layer,
+                admin = layui.admin;
+
+            form.render();
+
+            dtree.render({
+                elem: '#ParentTree',
+                url: '@Url.Action("GetTree")',
+                response: {
+                    message: 'msg',
+                    treeId: 'Id',
+                    parentId: 'ParentId',
+                    title:'Name'
+                },
+                dataStyle: "layuiStyle", 
+                dataFormat: "list",
+                ficon:"1",
+                icon: "-1"
+            });
+
+		$("#ParentId").on("click",function(){
+			$(this).toggleClass("layui-form-selected");
+			$("#test").toggleClass("layui-show layui-anim layui-anim-upbit");
+		});
+
+		dtree.on("node(ParentTree)", function(obj){
+			$("#input_city").val(obj.param.context);
+			$("#city").toggleClass("layui-form-selected");
+			$("#test").toggleClass("layui-show layui-anim layui-anim-upbit");
+		});
+
+            // 提交权限配置表单
+            form.on('submit(lay-form-submit)', function (data) {
+                admin.req({
+                    type: "POST",
+                    url: '@Url.Action("Add")',
+                    data: data.field,
+                    async: false,
+                    done: function (res) {
+                        if (res.code === 200) {
+                            layer.msg('保存成功', { time: 1000 }, function () {
+                                admin.back();
+                            });
+                        } else {
+                            layer.msg(res.msg, { icon: 2 });
+                        }
+                    },
+                    error: function (res) {
+                        layer.alert('出错了！', { icon: 2 });
+                        return false;
+                    }
+                });
+                return false;
+            });
+
+        });
+</script>

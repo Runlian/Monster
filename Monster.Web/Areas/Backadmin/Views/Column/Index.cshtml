@@ -1,0 +1,117 @@
+﻿@{
+    ViewBag.Title = "企业管理";
+}
+
+<div class="layui-card layadmin-header"><h3 class="layui-title">栏目管理</h3></div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div class="layui-form" lay-filter="component-form-group">
+                <div class="layui-form-item">
+                    <div class="layui-pull-right">
+                        <button id="btn_add" data-type="add" class="layui-btn layui-btn-normal">新建</button>
+                    </div>
+                </div>
+            </div>
+            <table class="layui-hide" id="mainTable" lay-filter="mainTable"></table>
+        </div>
+    </div>
+</div>
+<script type="text/html" id="operationTmpl">
+    <div class="layui-actions">
+        <a lay-event="edit">编辑</a>
+        <a lay-event="del">删除</a>
+    </div>
+</script>
+
+<script>
+    layui.use(['index', 'grid', 'admin'],function() {
+        var $ = layui.$,
+            admin = layui.admin,
+            table = layui.table,
+            grid = layui.grid;
+
+        var renderTable = function () {
+            grid.render({
+                elem: '#mainTable',
+                treeColIndex: 0, // 在哪一列显示展开图标
+                treeSpid: '', // 最顶级PId的值
+                treeIdName: 'Id', // Id列名称
+                treePidName: 'ParentId', // Pid列名称
+                skin: 'line',
+                size: 'lg',
+                height: 'full-285',
+                url: '@Url.Action("List", "Column")',
+                method: 'Get',
+                page: false,
+                cols: [
+                    [
+                        {
+                            field: 'Name',
+                            title: '名称'
+                        },{
+                            field: 'Type',
+                            title: '栏目类型',
+                            align:'center'
+                        },{
+                            field: 'ShowNav',
+                            title: '前台显示',
+                            templet:'<div>{{ d.ShowNav ? "是":"否" }}</div>',
+                            align:'center'
+                        },{
+                            field: 'IsAuth',
+                            title: '访问认证',
+                            templet:'<div>{{ d.ShowNav ? "是":"否" }}</div>',
+                            align:'center'
+                        },{
+                            field: 'IsEnabled',
+                            title: '是否启用',
+                            templet:'<div>{{ d.ShowNav ? "是":"否" }}</div>',
+                            align:'center'
+                        },{
+                            title: '操作',
+                            align: 'center',
+                            width: 175,
+                            toolbar: '#operationTmpl'
+                        }
+                    ]
+                ]
+            });
+        }
+        renderTable();
+
+        // 添加
+        $("#btn_add").on("click", function () {
+            pjax.loadUrl('@Url.Action("Add")');
+        });
+
+        //监听工具条
+        table.on('tool(mainTable)',function(obj) {
+            var data = obj.data;
+            if (obj.event === 'del') {
+                layer.confirm('确认删除该条数据？',function(index) {
+                    layer.close(index);
+                    admin.req({
+                        type: "POST",
+                        url: '@Url.Action("Delete")',
+                        data: { "id": data.Id },
+                        async: false,
+                        success: function(res) {
+                            if (res.code === 200) {
+                                layer.alert(res.msg, { icon: 1 });
+                                renderTable();
+                            } else {
+                                layer.alert(res.msg, { icon: 2 });
+                            }
+                        },
+                        error: function(res) {
+                            layer.alert('出错了！', { icon: 2 });
+                        }
+                    });
+                });
+            } else if (obj.event === 'edit') {
+                pjax.loadUrl('@Url.Action("Edit")?id=' + data.Id);
+            }
+        });
+    });
+</script>

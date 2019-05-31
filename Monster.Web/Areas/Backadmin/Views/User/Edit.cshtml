@@ -1,71 +1,69 @@
 ﻿@model Monster.Data.User
 @{
-    ViewBag.Title = "编辑用户";
+    ViewBag.Title = "用户管理";
 }
-
-<div id="container">
-    <div class="layui-card layadmin-header"><h3 class="layui-title">编辑用户</h3></div>
-    <div class="layui-fluid">
-        <div class="layui-card" style="min-height: calc(100vh - 180px)">
-            <div class="layui-card-body">
-                <div class="layui-row">
-                    <div class="layui-col-md6 layui-col-md-offset3">
-                        <form class="layui-form" lay-filter="component-form" style="margin-top: 80px;" onkeydown="if(event.keyCode===13){return false}">
-                            <input type="hidden" name="Id" value="@Model.Id" />
-                            <div class="layui-form-item">
-                                <label class="layui-form-label" required>姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名</label>
-                                <div class="layui-input-block">
-                                    <input type="text" name="Name" value="@Model.Name" lay-verify="required" placeholder="请输入姓名" autocomplete="off" class="layui-input" lay-verType="tips">
-                                </div>
+<div class="layui-card layadmin-header"><h3 class="layui-title">编辑用户</h3></div>
+<div class="layui-fluid">
+    <div class="layui-card" style="min-height: calc(100vh - 180px)">
+        <div class="layui-card-body">
+            <div class="layui-row">
+                <div class="layui-col-md6 layui-col-md-offset3">
+                    <form class="layui-form" lay-filter="component-form" style="margin-top: 80px;">
+                        <input type="hidden" name="Id" value="@Model.Id" />
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" required>姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="Name" value="@Model.Name" lay-verify="required" placeholder="请输入姓名" autocomplete="off" class="layui-input" lay-verType="tips">
                             </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label" required>登录帐号</label>
-                                <div class="layui-input-block">
-                                    <input type="text" name="Account" value="@Model.Account" lay-verify="required|account" placeholder="请输入登录帐号" autocomplete="off" class="layui-input" lay-verType="tips">
-                                </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" required>登录帐号</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="Account" value="@Model.Account" lay-verify="required|account" placeholder="请输入登录帐号" autocomplete="off" class="layui-input" lay-verType="tips">
                             </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">登录密码</label>
-                                <div class="layui-input-block">
-                                    <input type="password" id="Password" name="Password" placeholder="请输入登录密码" autocomplete="off" class="layui-input" lay-verType="tips">
-                                </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">登录密码</label>
+                            <div class="layui-input-block">
+                                <input type="password" id="Password" name="Password" placeholder="请输入登录密码" autocomplete="off" class="layui-input" lay-verType="tips">
                             </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">确认密码</label>
-                                <div class="layui-input-block">
-                                    <input type="password" id="RePassword" name="RePassword" lay-verify="repass" placeholder="请输入确认密码" autocomplete="off" class="layui-input" lay-verType="tips">
-                                </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">确认密码</label>
+                            <div class="layui-input-block">
+                                <input type="password" id="RePassword" name="RePassword" lay-verify="repass" placeholder="请输入确认密码" autocomplete="off" class="layui-input" lay-verType="tips">
                             </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label" required>是否启用</label>
-                                <div class="layui-input-block">
-                                    <input type="radio" name="IsEnabled" value="true" title="是" @(Model.IsEnabled ? "checked" : "")>
-                                    <input type="radio" name="IsEnabled" value="false" title="否" @(Model.IsEnabled ? "" : "checked")>
-                                </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" required>是否启用</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="IsEnabled" value="true" title="是" @(Model.IsEnabled ? "checked" : "")>
+                                <input type="radio" name="IsEnabled" value="false" title="否" @(Model.IsEnabled ? "" : "checked")>
                             </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">用户角色</label>
-                                <div class="layui-input-block">
-                                    @foreach (var item in Model.Roles)
-                                    {
-                                        <input type="checkbox" name="Rid[]" title="@item.Text" value="@item.Id" @(item.Checked ? "checked" : "") lay-skin="primary">
-                                    }
-                                </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">用户角色</label>
+                            <div class="layui-input-block">
+                                @foreach (var item in Model.Roles)
+                                {
+                                    <input type="checkbox" name="Rid[]" title="@item.Text" value="@item.Id" @(item.Checked ? "checked" : "") lay-skin="primary">
+                                }
                             </div>
-                            <div class="layui-form-item">
-                                <div class="layui-input-block">
-                                    <button lay-submit lay-filter="lay-form-submit" class="layui-btn">保存</button>
-                                    <button type="button" layadmin-event="back" class="layui-btn layui-btn-primary">返回</button>
-                                </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button lay-submit lay-filter="lay-form-submit" class="layui-btn">保存</button>
+                                <button type="button" layadmin-event="back" class="layui-btn layui-btn-primary">返回</button>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-    <script>
-        layui.use(['index','form', 'admin'], function () {
+</div>
+<script>
+        layui.use(['form', 'admin'], function () {
             var $ = layui.$,
                 form = layui.form,
                 admin = layui.admin;
@@ -94,13 +92,15 @@
 
             // 提交权限配置表单
             form.on('submit(lay-form-submit)', function (data) {
+
                 var roleIds = [];
                 layui.each(data.field, function (index, item) {
                     if (index.indexOf('Rid') !== -1 ) {
                         roleIds.push(item);
                     };
                 });
-                data.field["RoleId"] = roleIds;
+                data.field.RoleId = roleIds;
+
                 admin.req({
                     type: "POST",
                     url: '@Url.Action("Edit")',
@@ -124,5 +124,4 @@
             });
 
         });
-    </script>
-</div>
+</script>

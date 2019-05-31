@@ -8,14 +8,8 @@ using SqlSugar;
 
 namespace Monster.Web.Areas.Backadmin.Controllers
 {
-    public class LoginController : Controller
+    public class LoginController : BaseController
     {
-        public SqlSugarClient Context;
-        public LoginController()
-        {
-            Context = DbConfig.GetDbInstance();
-        }
-
         /// <summary>
         /// 登录
         /// </summary>

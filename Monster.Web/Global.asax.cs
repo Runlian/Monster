@@ -12,7 +12,7 @@ namespace Monster.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
-            DbInit.Init();
+            //DbInit.Init();
         }
     }
 }
